@@ -76,3 +76,87 @@ Jenis Kekerasan dan Jenis Layanan merupakan contoh dari bagian yang dapat diisi 
 
 Hasil akhir dari data yang telah melewati proses ETL kemudian dimasukkan ke dalam fitur select_final yang berfungsi mengecek nama label dan urutan kolom agar benar-benar sesuai dengan simfoni, setelahnya data yang telah sesuai tersebut dimasukkan ke dalam beberapa database yang diperlukan yaitu Database lokal sebagai backup, database server yang bertindak sebagai Data Warehouse Simfoni, dan backup lainnya dalam bentuk Excel.
 
+### Rekap Query SQL
+
+Data hasil ETL kemudian direkap menggunakan SQL untuk memperoleh data tabulasi yang siap untuk diagregasikan dengan data Simfoni lalu divisualisasikan bersama. Rekap dilakukan menggunakan PostgeSQL dengan memanfaatkan database management bawaannya yaitu pgAdmin. Beberapa fitur SQL yang digunakan diantaranya:
+
+#### Common Table Expression
+
+```
+with 
+
+jumkasus as (
+select a.kode_prov_kasus,a.tahun_input,a.bulan_input, 
+count(DISTINCT kasus_id)as jumlah_kasus
+from hasil_sapa_perempuan_rev a
+group by a.kode_prov_kasus,a.tahun_input,a.bulan_input
+),
+
+jumkorban as (
+select a.kode_prov_kasus,a.tahun_input,a.bulan_input, 
+count(DISTINCT korban_id)as jumlah_korban
+from hasil_sapa_perempuan_rev a
+group by a.kode_prov_kasus,a.tahun_input,a.bulan_input
+),
+
+jumtindak as (
+select a.kode_prov_kasus,a.tahun_input,a.bulan_input,
+case when jenis_kekerasan='Fisik' then count(DISTINCT korban_id)end as k_fisik, 
+case when jenis_kekerasan='Psikis' then count(DISTINCT korban_id)end as k_psikis, 
+case when jenis_kekerasan='Seksual' then count(DISTINCT korban_id)end as k_seksual, 
+case when jenis_kekerasan='Trafficking' then count(DISTINCT korban_id)end as k_trafficking, 
+case when jenis_kekerasan='Penelantaran' then count(DISTINCT korban_id)end as k_penelantaran, 
+case when jenis_kekerasan='Eksploitasi' then count(DISTINCT korban_id)end as k_eksploitasi, 
+case when jenis_kekerasan='Lainnya' then count(DISTINCT korban_id)end as k_lainnya
+from hasil_sapa_perempuan_rev a
+group by a.kode_prov_kasus,a.tahun_input,a.bulan_input,jenis_kekerasan
+),
+```
+
+Dasar dari rekapan SQL yang dilakukan adalah dengan memanfaatkan fitur CTE agar rekap per field yang diperlukan menjadi lebih fleksibel, dengan membuat pengelompokan pada masing masing field untuk kemudian dapat dilakukan rekapan terpisah melalui CTE yang dibuat. CTE dasar ini sebagaimana dapat dilihat di gambar di atas berisi perintah untuk mengkonversi input tiap opsi jawaban pada tiap-tiap kolom menjadi angka, kemudian dilakukan groupping berdasarkan kode provinsi, tahun dan bulan input, serta field masing-masing. 
+
+Setelah seluruh data dikonversi menjadi numerik, kemudian digunakan kembali fitur CTE untuk rekap tahap kedua yang berfungsi untuk mengagregasi data-data input yang telah bersifat numerik hasil dari CTE tahap awal sebelumnya seperti contoh query berikut:
+```
+rekap_kasus as(
+select kode_prov_kasus,tahun_input,bulan_input
+,sum(jumlah_kasus)jumlah_kasus
+from jumkasus
+GROUP BY kode_prov_kasus,tahun_input,bulan_input),
+
+rekap_korban as(
+select kode_prov_kasus,tahun_input,bulan_input
+,sum(jumlah_korban)jumlah_korban
+from jumkorban
+GROUP BY kode_prov_kasus,tahun_input,bulan_input),
+
+rekap_tindak as(
+select kode_prov_kasus,tahun_input,bulan_input
+,sum(k_fisik)k_fisik
+,sum(k_psikis)k_psikis
+,sum(k_seksual)k_seksual
+,sum(k_trafficking)k_trafficking
+,sum(k_penelantaran)k_penelantaran
+,sum(k_eksploitasi)k_eksploitasi
+,sum(k_lainnya)k_lainnya
+from jumtindak  
+GROUP BY kode_prov_kasus,tahun_input,bulan_input),
+```
+
+Data yang telah diagregasi setelah melewati dua tahap CTE, lalu dilakukan join dengan master data pada kolom-kolom yang perlu untuk dipetakan seperti kode provinsi, tahun dan bulan input, dengan contoh query SQL sebagai berikut:
+```
+from wil aa
+join rekap_kasus a on aa.kode::text=a.kode_prov_kasus
+left join rekap_korban b on aa.kode::text=b.kode_prov_kasus and a.tahun_input=b.tahun_input and a.bulan_input=b.bulan_input
+left join rekap_tindak c on aa.kode::text=c.kode_prov_kasus and a.tahun_input=c.tahun_input and a.bulan_input=c.bulan_input
+left join rekap_layanan d on aa.kode::text=d.kode_prov_kasus and a.tahun_input=d.tahun_input and a.bulan_input=d.bulan_input
+left join rekap_usia e on aa.kode::text=e.kode_prov_kasus and a.tahun_input=e.tahun_input and a.bulan_input=e.bulan_input
+left join rekap_pendidikan f on aa.kode::text=f.kode_prov_kasus and a.tahun_input=f.tahun_input and a.bulan_input=f.bulan_input
+left join rekap_tempat g on aa.kode::text=g.kode_prov_kasus and a.tahun_input=g.tahun_input and a.bulan_input=g.bulan_input
+left join rekap_pekerjaan h on aa.kode::text=h.kode_prov_kasus and a.tahun_input=h.tahun_input and a.bulan_input=h.bulan_input
+left join rekap_status i on aa.kode::text=i.kode_prov_kasus and a.tahun_input=i.tahun_input and a.bulan_input=i.bulan_input
+left join rekap_hubungan j on aa.kode::text=j.kode_prov_kasus and a.tahun_input=j.tahun_input and a.bulan_input=j.bulan_input
+
+order by kode,bulan_input
+```
+
+Setelah melalui berbagai tahapan yang dijelaskan, maka data telah siap untuk digabungkan dengan Simfoni PPA
