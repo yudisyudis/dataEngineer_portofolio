@@ -64,4 +64,15 @@ JavaScript digunakan untuk berbagai fungsi diantaranya:
 #### Lookup data dengan database
 ![image](https://user-images.githubusercontent.com/91902011/208221945-3f2653f4-7d42-45e9-85b8-e712a20320e5.png)
 
-Melakukan penyetaraan data dengan data master yang bersumber dari database, langkah ini penting karena perbedaan sifat data antara SAPA yang merupakan data mentah hasil isian operator penerima pengaduan, dengan Simfoni yang tipe datanya sudah teratur dan tidak bisa menerima sembarang jenis data.
+Database Lookup digunakan untuk melakukan penyetaraan data dengan data master yang bersumber dari database, langkah ini penting karena perbedaan sifat data antara SAPA yang merupakan data mentah hasil isian operator penerima pengaduan, dengan Simfoni yang tipe datanya sudah teratur dan tidak bisa menerima sembarang jenis data. Data SAPA yang banyak tidak beraturan harus diformat sedemikian rupa sehingga sesuai dengan format Simfoni.
+
+#### Row Normaliser pada beberapa jenis data
+![image](https://user-images.githubusercontent.com/91902011/208251301-6ccfdb61-215d-4a89-a21a-f76a146ce23d.png)
+
+Jenis Kekerasan dan Jenis Layanan merupakan contoh dari bagian yang dapat diisi lebih dari satu nilai. Pada SAPA, nilai kedua dan seterusnya ditulis dalam kolom yang berbeda, sedangkan di Simfoni nilai kedua dan seterusnya ditulis dalam row yang berbeda di satu kolom yang sama. Kondisi demikian mengharuskan data input SAPA pada bagian tersebut dinormalisasikan sehingga kolom isian dikemas menjadi hanya satu kolom, dengan penambahan row jika nilai lebih dari satu.
+
+#### Insert hasil ke Database
+![image](https://user-images.githubusercontent.com/91902011/208251456-77ac2f84-3c78-44f4-aaa4-e7f40705e5a1.png)
+
+Hasil akhir dari data yang telah melewati proses ETL kemudian dimasukkan ke dalam fitur select_final yang berfungsi mengecek nama label dan urutan kolom agar benar-benar sesuai dengan simfoni, setelahnya data yang telah sesuai tersebut dimasukkan ke dalam beberapa database yang diperlukan yaitu Database lokal sebagai backup, database server yang bertindak sebagai Data Warehouse Simfoni, dan backup lainnya dalam bentuk Excel.
+
