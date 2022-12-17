@@ -23,3 +23,45 @@ Saya diamanahi untuk merancang alur integrasi yang memungkinkan data SAPA 129 da
 ## Flowchart
 
 ![Untitled Diagram drawio(3)](https://user-images.githubusercontent.com/91902011/208010199-dab69319-70b9-4ae3-82be-ded8d1757782.png)
+
+## Penjelasan
+
+### Input Data
+
+<img width="1000" alt="data1" src="https://user-images.githubusercontent.com/91902011/208219984-08a698a8-e332-476e-8d42-136de78275c3.png">
+
+<img width="1000" alt="data2" src="https://user-images.githubusercontent.com/91902011/208219997-3be3ff0c-7764-42c0-9244-301e082187b6.png">
+
+<img width="1000" alt="data3" src="https://user-images.githubusercontent.com/91902011/208220007-5ae98f05-2c61-47ef-97e3-d44eceb4a88e.png">
+
+<img width="1000" alt="data4" src="https://user-images.githubusercontent.com/91902011/208220015-15d7f429-b55b-44fa-9623-317de3c7e30b.png">
+
+Input data dari layanan SAPA 129 terdiri dari 64 kolom dan 1045 baris data untuk tahun 2021. Dari sekian banyak data kemudian ditransformasikan mengikuti format yang diterima oleh aplikasi Simfoni PPA yang diantaranya memerlukan perubahan nama kolom, format data, normalisasi data, dan lain sebagainya. Data dalam contoh gambar diatas disamarkan untuk menjaga privasi korban.
+
+### Proses ETL
+
+Alur ETL yang dirancang terdiri dari berbagai fitur yang dimanfaatkan sesuai dengan kebutuhan, diantara jenis-jenis fitur yang digunakan adalah:
+
+#### Input Data, Seleksi Data, Penambahan Data yang tidak tersedia
+![image](https://user-images.githubusercontent.com/91902011/208221610-b286971b-bd82-4725-8f7a-b22badb9e500.png)
+
+* Input data dengan format CSV
+* Memfilter data yang tidak ada isinya
+* Menambahkan data-data default yang diperlukan Simfoni tapi tidak terdapat di data input seperti tahun input, instansi penginput, dan sebagainya
+
+#### Pemanfaatan fitur modified JavaScript
+![image](https://user-images.githubusercontent.com/91902011/208221725-e1d6faa0-d055-4ffd-afe1-6d01f364f430.png)
+
+JavaScript digunakan untuk berbagai fungsi diantaranya:
+
+* Mengenerate data berdasarkan data baru dengan fungsi berdasarkan data yang telah tersedia
+* Memperbaiki salah ejaan pada beberapa field
+* Mapping Kode Provinsi sesuai data input Provinsi
+* Mengenerate kelompok data (usia)
+* Mengelompokkan jenis kekerasan, jenis layanan, dan kategori korban
+* Mengenerate tanggal perkiraan bagi data dengan data tanggal yang kosong
+
+#### Lookup data dengan database
+![image](https://user-images.githubusercontent.com/91902011/208221945-3f2653f4-7d42-45e9-85b8-e712a20320e5.png)
+
+Melakukan penyetaraan data dengan data master yang bersumber dari database, langkah ini penting karena perbedaan sifat data antara SAPA yang merupakan data mentah hasil isian operator penerima pengaduan, dengan Simfoni yang tipe datanya sudah teratur dan tidak bisa menerima sembarang jenis data.
