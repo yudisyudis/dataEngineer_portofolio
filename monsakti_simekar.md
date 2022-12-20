@@ -54,6 +54,14 @@ API endpoint terdiri dari alamat host monsakti, kemudian dilengkapi dengan kode 
 2. Data yang dihasilkan berbentuk JSON, lalu perlu untuk masuk ke step JSON input untuk ditransformasikan menjadi berbentuk Table
 3. Ditambahkan kolom timestamp melalui step Get System Info
 
+    Data hasil HTTP post yang terdiri dari endpoint dan token asli (token final):
+
+    <img width="500" alt="hasil2" src="https://user-images.githubusercontent.com/91902011/208610485-ee292afd-92ce-425d-a54f-3411961d03b3.png">
+
+    Data hasil dari JSON input:
+
+    <img width="500" alt="hasil1" src="https://user-images.githubusercontent.com/91902011/208609893-b71dc0a1-68cd-4b75-86ba-97ccbf04f0c3.png">
+
 #### Insert Database Monspan
 
 ![image](https://user-images.githubusercontent.com/91902011/208580708-ec76d215-721e-4756-a604-7c6d6a975e3c.png)
