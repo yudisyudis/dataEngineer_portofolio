@@ -21,3 +21,55 @@ Saya diamanahkan untuk membuat ETL yang berfungsi secara otomatis menghubungkan 
 ## Flowchart
 
 ![siga drawio](https://user-images.githubusercontent.com/91902011/208602722-e88fc1ce-460f-4d36-8ddc-fcfdc8962913.png)
+
+## Penjelasan
+
+### File Update Data
+
+File disediakan oleh tim stastisi, dalam bentuk excel. Perlu kesepakatan untuk konsistensi penamaan file, penamaan sheet, penamaan serta posisi kolom dan row, agar senantiasa terbaca oleh ETL yang akan dibangun.
+
+### Proses ETL
+
+#### Input dan Validasi Data
+
+![image](https://user-images.githubusercontent.com/91902011/208603823-26f2bc95-5adf-4546-996f-f65ffb5a2aed.png)
+
+Step Input dan Validasi Data pada ETL. Input diatur berupa file excel, dengan menspesifikasikan nama dan lokasi file, serta nama sheet, kolom, dan row mana yang hendak diambil datanya. Selanjutnya masuk ke step Validator, yang berfungsi membuang data-data yang kolom pentingnya seperti data kota atau data tahun bernilai null.
+
+#### Penyetaraan ejaan nama Kota
+
+![image](https://user-images.githubusercontent.com/91902011/208604395-9ff21699-cc6f-4190-906f-031f59ba5496.png)
+
+Menggunakan step fuzzy match, dilakukan screening nama-nama kota pada file input lalu menyamakan ejaan tiap-tiap nama Kota dengan apa yang terdapat di database, agar dua kota yang sama tidak terbaca sebagai dua kota yang berbeda hanya karena berbeda ejaan atau berbeda huruf kapital. Lalu data hasil match tersebut pada step Select diambil dan menggantikan kolom nama kota yang lama.
+
+#### Lookup Wilayah dan Tahun
+
+![image](https://user-images.githubusercontent.com/91902011/208605062-5761c1a6-a2cd-48cc-a499-cdbbe6c334ed.png)
+
+Langkah berikutnya adalah melakukan lookup data nama Kota dan Tahun, lalu merubahnya menjadi kode wilayah dan kode tahun sesuai dengan apa yang ada di database, contoh hasilnya sebagai berikut:
+
+![image](https://user-images.githubusercontent.com/91902011/208605992-b1e7d5d5-bed5-4f32-8128-ac9a98951a6d.png)
+
+#### Insert/update Database
+
+![image](https://user-images.githubusercontent.com/91902011/208606104-67983821-55f7-4e73-b834-5ec242d751dd.png)
+
+Hasil akhir dari ETL kemudian dimasuukan ke dalam database MS SQL, dengan metode update agar data sebelumnya tidak hilang seperti ketika menggunakan metode truncate.
+
+### Pembuatan Visualisasi di Tableau Desktop
+
+![image](https://user-images.githubusercontent.com/91902011/208606876-b59f3ea3-35a6-4fd4-8f9e-2d5bffb45c71.png)
+
+Data source berasal dari database di MS SQL yang merupakan muara dari ETL yang dibuat sebelumnya, sifat data source tableau dibuat menjadi Extract, lalu dipublish ke Tableau Server dengan pengaturan refresh berkala setiap harinya pukul 4 pagi.
+
+![image](https://user-images.githubusercontent.com/91902011/208607369-ef94e4cb-5204-4a72-8cd7-c471f17b4dc3.png)
+
+### Deploy Visualisasi di Aplikasi SIGA
+
+![image](https://user-images.githubusercontent.com/91902011/208607921-e6f38816-9a8c-4488-b0f6-889568c0f92a.png)
+
+Visualisasi yang telah dideploy di Tableau Server kemudian di embeded di aplikasi web SIGA. Visualisasi tersebut akan secara responsif berubah tiap kali terdapat perubahan data yang ETL-nya telah berjalan otomatis berkala tiap harinya.
+
+
+
+
