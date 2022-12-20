@@ -21,3 +21,8 @@ Saya diberi amanah untuk mengelola seluruh API Monsakti untuk Kementerian Pember
     Digunakan untuk mengetes cara akses API, input/output apa yang diperlukan untuk mengakses data yang tersedia di API tersebut.
 
 ## Flowchart
+
+![monsakti drawio(3)](https://user-images.githubusercontent.com/91902011/208561181-3a99a6ff-558a-49bf-ac06-7a3bfd3b6407.png)
+
+## Penjelasan
+
