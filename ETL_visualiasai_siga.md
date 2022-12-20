@@ -20,7 +20,7 @@ Saya diamanahkan untuk membuat ETL yang berfungsi secara otomatis menghubungkan 
 
 ## Flowchart
 
-![siga drawio](https://user-images.githubusercontent.com/91902011/208602722-e88fc1ce-460f-4d36-8ddc-fcfdc8962913.png)
+![siga drawio(2)](https://user-images.githubusercontent.com/91902011/208608653-8e7787ee-7181-457f-9fa8-770daaf4ba9e.png)
 
 ## Penjelasan
 
