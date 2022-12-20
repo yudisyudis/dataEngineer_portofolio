@@ -2,7 +2,7 @@
 
 ## Latar Belakang
 
-Kementerian Keuangan mengembangkan sebuah aplikasi untuk memonitor informasi keuangan tiap-tiap kementerian atau lembaga negara yang disebut dengan Monsakti. Tiap Kementerian dapat mengakses Monsakti melalui API yang telah disediakan dengan menambahkan informasi identitas kode Kementerian terkait. API yang disediakan telah dilengkapi dengan bearer token sebagai metode autentikasi, tiap URL API hendak diakses, perlu memasukkan token default terlebih dahulu sebelum kemudian token asli tergenerate secara otomatis dan berlaku untuk akses modul yang sama.
+Kementerian Keuangan mengembangkan sebuah aplikasi untuk memonitor informasi keuangan tiap-tiap kementerian atau lembaga negara yang disebut dengan Monsakti. Tiap Kementerian dapat mengakses Monsakti melalui API yang telah disediakan dengan menambahkan informasi identitas kode Kementerian terkait. API yang disediakan telah dilengkapi dengan bearer token sebagai metode autentikasi, tiap link API hendak diakses, perlu memasukkan token default terlebih dahulu sebelum kemudian token asli tergenerate secara otomatis dan berlaku untuk akses modul yang sama.
 
 Saya diberi amanah untuk mengelola seluruh API Monsakti untuk Kementerian Pemberdayaan Perempuan dan Perlindungan Anak (KPPPA) yang totalnya terdiri dari 6 modul dan 29 sub modul. Seluruh sub modul akan dibuatkan pipeline yang akan mengambil dan memasukkan data ke database Monspan, lalu 3 sub modul spesifik yaitu Realisasi Anggaran, Capaian Program, dan Pagu Anggaran akan lanjut dikirimkan ke data warehouse aplikasi Simekar.
 
@@ -25,4 +25,15 @@ Saya diberi amanah untuk mengelola seluruh API Monsakti untuk Kementerian Pember
 ![monsakti drawio(3)](https://user-images.githubusercontent.com/91902011/208561181-3a99a6ff-558a-49bf-ac06-7a3bfd3b6407.png)
 
 ## Penjelasan
+
+### Persiapan
+
+Tim Monsakti menyediakan API credensial yang berguna untuk mengakses tiap-tiap modul yang diperlukan, diantaranya:
+
+1. API endpoint tiap modul
+2. Reset Token
+
+API endpoint terdiri dari alamat host monsakti, kemudian dilengkapi dengan kode kementerian, kode satuan kerja, serta kode kelompok modul dan sub modul yang diinginlkan. Sementara reset token digunakan sebagai autentikasi awal untuk mengenerate token sebenarnya.
+
+
 
